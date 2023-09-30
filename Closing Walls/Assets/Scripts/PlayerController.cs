@@ -8,7 +8,7 @@ public class PlayerController : MonoBehaviour
     public List<Vector2> dirTouching;
     public List<Vector2> wantsToMove;
     public float speed = 0.05f;
-    public float gravitySpeed = 0.2f;
+    private float gravitySpeed = 0.03f;
     public Vector2 velocity;
     // Start is called before the first frame update
     void Start()
@@ -70,21 +70,25 @@ public class PlayerController : MonoBehaviour
         }
         dirTouching.Clear();
         wantsToMove.Clear();
+        velocity += Vector2.down*gravitySpeed;
         transform.position += (Vector3)velocity;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        CollisionBehavior(collision);
+    }
+    private void CollisionBehavior(Collision2D collision){
         Vector2 normal;
-        for(int i = 0; i < collision.contactCount; i++)
+        for (int i = 0; i < collision.contactCount; i++)
         {
             normal = collision.contacts[i].normal;
             dirTouching.Add(normal);
             Debug.Log(normal);
         }
     }
-    private void OnCollisionExit(Collision collision)
+    private void OnCollisionStay2D(Collision2D collision)
     {
-        
+        CollisionBehavior(collision);
     }
 }
