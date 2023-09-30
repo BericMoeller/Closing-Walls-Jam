@@ -8,8 +8,9 @@ public class PlayerController : MonoBehaviour
     public List<Vector2> dirTouching;
     public List<Vector2> wantsToMove;
     public float speed = 0.05f;
-    private float gravitySpeed = 0.03f;
+    private float gravitySpeed = 0.008f;
     public Vector2 velocity;
+    public bool touchingGround = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -41,8 +42,9 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        touchingGround = false;
         velocity *= 0.8f;
-        Vector2 totalVel = new Vector2(0,0);
+        Vector2 totalVel = new Vector2(0, 0);
         Vector2 collisionDir = new Vector2(0, 0);
         for (int i = 0; i < dirTouching.Count; i++)
         {
@@ -61,16 +63,24 @@ public class PlayerController : MonoBehaviour
         {
             Debug.Log("totalVel: "+totalVel+". collisionDir: "+collisionDir+". dot: "+dotResult);
         }
-        if (dotResult >= 0){
+        if (dotResult >= 0) {
             velocity += totalVel * speed;
         }
-        else
+        else  
         {
-            velocity = collisionDir* speed;
+            velocity = collisionDir * speed;
+        }
+        if (Vector2.Dot(collisionDir, Vector2.down) < 0)
+        {
+            touchingGround = true;
+            velocity.y = 0.001f;
         }
         dirTouching.Clear();
         wantsToMove.Clear();
-        velocity += Vector2.down*gravitySpeed;
+        if(!touchingGround)
+        {
+            //velocity.y = 
+        }    
         transform.position += (Vector3)velocity;
     }
 
