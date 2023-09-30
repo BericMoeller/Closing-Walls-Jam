@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -8,9 +6,12 @@ public class PlayerController : MonoBehaviour
     public List<Vector2> dirTouching;
     public List<Vector2> wantsToMove;
     public float speed = 0.05f;
-    private float gravitySpeed = 0.008f;
+    private float gravitySpeed = 0.003f;
     public Vector2 velocity;
     public bool touchingGround = false;
+    public int jumpLeft = 0;
+    public int fallingFor = 0;
+    public int stuck = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -22,9 +23,10 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKey(KeyCode.W))
+        if(Input.GetKey(KeyCode.W) && jumpLeft > 0)
         {
             wantsToMove.Add(new Vector2(0, 1));
+            jumpLeft--;
         }
         if(Input.GetKey(KeyCode.S))
         {
@@ -43,6 +45,7 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         touchingGround = false;
+        bool hasUpwardsThrust = false;
         velocity *= 0.8f;
         Vector2 totalVel = new Vector2(0, 0);
         Vector2 collisionDir = new Vector2(0, 0);
@@ -54,33 +57,49 @@ public class PlayerController : MonoBehaviour
         collisionDir.Normalize();
         for (int i = 0; i < wantsToMove.Count; i++)
         {
+            if (wantsToMove[i].Equals(Vector2.up))
+            {
+                hasUpwardsThrust = true;
+            }
             totalVel.x += wantsToMove[i].x;
             totalVel.y += wantsToMove[i].y;
         }
         totalVel.Normalize();
         float dotResult = Vector2.Dot(velocity, collisionDir);
-        if (collisionDir.x != 0 || collisionDir.y != 0)
+        if (!collisionDir.Equals(Vector2.zero) && jumpLeft < 100)
         {
+            jumpLeft += 5;
             Debug.Log("totalVel: "+totalVel+". collisionDir: "+collisionDir+". dot: "+dotResult);
         }
         if (dotResult >= 0) {
             velocity += totalVel * speed;
         }
-        else  
+        else
         {
             velocity = collisionDir * speed;
+        }
+        float multiplier = 1.0f;
+        if (stuck > 5)
+        {
+            multiplier = 50f;
         }
         if (Vector2.Dot(collisionDir, Vector2.down) < 0)
         {
             touchingGround = true;
-            velocity.y = 0.001f;
+            jumpLeft = 80;
+            velocity.y = 0.001f * multiplier;
         }
         dirTouching.Clear();
         wantsToMove.Clear();
-        if(!touchingGround)
+        if(!touchingGround && !hasUpwardsThrust)
         {
-            //velocity.y = 
-        }    
+            fallingFor++;
+            velocity.y -= gravitySpeed * fallingFor;
+        }
+        else
+        {
+            fallingFor = 0;
+        }
         transform.position += (Vector3)velocity;
     }
 
@@ -100,5 +119,10 @@ public class PlayerController : MonoBehaviour
     private void OnCollisionStay2D(Collision2D collision)
     {
         CollisionBehavior(collision);
+        stuck++;
+    }
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        stuck = 0;
     }
 }
