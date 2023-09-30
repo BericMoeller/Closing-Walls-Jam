@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour
     public int jumpLeft = 0;
     public bool canJump;
     public int fallingFor = 0;
-    public int stuck = 0;
+    public float stuck = 0.0f;
     // Start is called before the first frame update
     void Start()
     {
@@ -84,17 +84,24 @@ public class PlayerController : MonoBehaviour
         {
             velocity = collisionDir * speed;
         }
-        float multiplier = 1.0f;
-        if (stuck > 5)
-        {
-            multiplier = 50f;
-        }
         if (Vector2.Dot(collisionDir, Vector2.down) < 0)
         {
             touchingGround = true;
+            if (jumpLeft > 70)
+            {
+                velocity.y = 0;
+            }
             jumpLeft = 80;
             canJump = true;
-            velocity.y = 0.001f * multiplier;
+            if (stuck < 0.0f)
+            {
+                transform.position = new Vector3(transform.position.x, transform.position.y - stuck, transform.position.z);
+                velocity.y = 0;
+            }
+        }
+        else
+        {
+            stuck = 0.0f;
         }
         dirTouching.Clear();
         wantsToMove.Clear();
@@ -119,6 +126,10 @@ public class PlayerController : MonoBehaviour
         for (int i = 0; i < collision.contactCount; i++)
         {
             normal = collision.contacts[i].normal;
+            if (collision.contacts[i].separation < -0.1f)
+            {
+                stuck = collision.contacts[i].separation;
+            }
             dirTouching.Add(normal);
             Debug.Log(normal);
         }
@@ -126,10 +137,5 @@ public class PlayerController : MonoBehaviour
     private void OnCollisionStay2D(Collision2D collision)
     {
         CollisionBehavior(collision);
-        stuck++;
-    }
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        stuck = 0;
     }
 }
