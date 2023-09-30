@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     public Vector2 velocity;
     public bool touchingGround = false;
     public int jumpLeft = 0;
+    public bool canJump;
     public int fallingFor = 0;
     public int stuck = 0;
     // Start is called before the first frame update
@@ -23,10 +24,14 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKey(KeyCode.W) && jumpLeft > 0)
+        if(Input.GetKey(KeyCode.W) && jumpLeft > 0&&canJump)
         {
             wantsToMove.Add(new Vector2(0, 1));
             jumpLeft--;
+        }
+        else
+        {
+            canJump = false;
         }
         if(Input.GetKey(KeyCode.S))
         {
@@ -69,6 +74,7 @@ public class PlayerController : MonoBehaviour
         if (!collisionDir.Equals(Vector2.zero) && jumpLeft < 100)
         {
             jumpLeft += 5;
+            canJump = true;
             Debug.Log("totalVel: "+totalVel+". collisionDir: "+collisionDir+". dot: "+dotResult);
         }
         if (dotResult >= 0) {
@@ -87,6 +93,7 @@ public class PlayerController : MonoBehaviour
         {
             touchingGround = true;
             jumpLeft = 80;
+            canJump = true;
             velocity.y = 0.001f * multiplier;
         }
         dirTouching.Clear();
