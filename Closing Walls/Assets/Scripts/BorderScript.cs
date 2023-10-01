@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.XR;
 using UnityEngine;
 
 public class BorderScript : MonoBehaviour
@@ -7,6 +8,7 @@ public class BorderScript : MonoBehaviour
     private Vector3 growthy;
     private Vector3 moveleft;
     private Vector3 moveright;
+    private bool hasEnded = false;
 
     [SerializeField]
     private Transform left;
@@ -37,9 +39,17 @@ public class BorderScript : MonoBehaviour
 
     void FixedUpdate()
     {
-        bottom.localScale += growthy;
-        top.localScale += growthy;
-        left.localPosition += moveright;
-        right.localPosition += moveleft;
+        if (!hasEnded)
+        {
+            bottom.localScale += growthy;
+            top.localScale += growthy;
+            left.localPosition += moveright;
+            right.localPosition += moveleft;
+        }
     }
+    public void End()
+    {
+        hasEnded = true;
+    }
+
 }

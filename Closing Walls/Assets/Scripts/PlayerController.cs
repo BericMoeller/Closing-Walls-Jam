@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     private int jumptimer = 0;
     private bool canJump = true;
     private bool canWallJump = false;
+    private bool disableInput = false;
     Animator animator;// animation stuff disregard
 
     [SerializeField] 
@@ -37,46 +38,49 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        horizontal = Input.GetAxisRaw("Horizontal");
+        
 
-        // reg jump
-
-        if (Input.GetKey(KeyCode.W) && isGrounded() && canJump)
+        if (!disableInput)
         {
-            rb.velocity = new Vector2(rb.velocity.x, jumpingPower);
-            jumptimer = 10;
-            canJump = false;
-            canWallJump = true;
+            horizontal = Input.GetAxisRaw("Horizontal");
+            // reg jump
+
+            if (Input.GetKey(KeyCode.W) && isGrounded() && canJump)
+            {
+                rb.velocity = new Vector2(rb.velocity.x, jumpingPower);
+                jumptimer = 10;
+                canJump = false;
+                canWallJump = true;
+            }
+
+            // wall jump
+
+            if (Input.GetKey(KeyCode.W) && canJump && canWallJump && isHittingWall() != 0 && !isGrounded())
+            {
+                rb.velocity = new Vector2(jumpingPower * isHittingWall() * speed, jumpingPower);
+                jumptimer = 10;
+                canJump = false;
+                canWallJump = false;
+            }
+
+
+            // fall handling
+
+            if (Input.GetKey(KeyCode.W) && rb.velocity.y > 0f)
+            {
+                rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y + (jumpingPower * jumptimer / 10f));
+                if (jumptimer > 0) jumptimer--;
+            }
+
+            if (!Input.GetKey(KeyCode.W))
+            {
+                if (rb.velocity.y > 0f) rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.9f);
+                canWallJump = !isGrounded(); // trust me it just works dont even ask the reasoning behind this
+
+                jumptimer = 0;
+                canJump = true;
         }
-
-        // wall jump
-
-        if(Input.GetKey(KeyCode.W) && canJump && canWallJump && isHittingWall() != 0 && !isGrounded())
-        {
-            rb.velocity = new Vector2(jumpingPower * isHittingWall() * speed, jumpingPower);
-            jumptimer = 10;
-            canJump = false;
-            canWallJump = false;
         }
-
-
-        // fall handling
-
-        if (Input.GetKey(KeyCode.W) && rb.velocity.y > 0f)
-        {
-            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y + (jumpingPower * jumptimer/10f));
-            if (jumptimer > 0) jumptimer--;
-        }
-
-        if (!Input.GetKey(KeyCode.W))
-        {
-            if (rb.velocity.y > 0f) rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.9f);
-            canWallJump = !isGrounded(); // trust me it just works dont even ask the reasoning behind this
-
-            jumptimer = 0;
-            canJump = true;
-        }
-
         // Animation 'Logic'
         if (canJump && rb.velocity.Equals(Vector2.zero))
         {
@@ -155,7 +159,15 @@ public class PlayerController : MonoBehaviour
             transform.localScale = localScale;
         }
     }
-
+    public void levelEnd()
+    {
+        disableInput = true;
+        rb.velocity = Vector3.zero;
+    }
+    public void Boost(float power)
+    {
+        rb.velocity = new Vector2(rb.velocity.x, power+rb.velocity.y);
+    }
     public void Run()
     {
         animator.SetInteger("AnimState", 1);
