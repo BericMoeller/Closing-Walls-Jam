@@ -6,14 +6,23 @@ public class PlayerController : MonoBehaviour
 {
     private float horizontal;
     private float speed = 12f;
-    private float jumpingPower = 24f;
+    private float jumpingPower = 4f;
     private bool isFacingRight = true;
+    private int jumptimer = 0;
+    private bool canJump = true;
+    private bool canWallJump = false;
 
     [SerializeField] 
     private Rigidbody2D rb;
     
     [SerializeField] 
     private Transform groundCheck;
+
+    [SerializeField]
+    private Transform backCheck;
+
+    [SerializeField]
+    private Transform frontCheck;
 
     [SerializeField] 
     private LayerMask groundLayer;
@@ -29,17 +38,46 @@ public class PlayerController : MonoBehaviour
     {
         horizontal = Input.GetAxisRaw("Horizontal");
 
-        if (Input.GetKey(KeyCode.W) && isGrounded())
+        // reg jump
+
+        if (Input.GetKey(KeyCode.W) && isGrounded() && canJump)
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpingPower);
+            jumptimer = 10;
+            canJump = false;
+            canWallJump = true;
         }
+
+        // wall jump
+
+        if(Input.GetKey(KeyCode.W) && canJump && canWallJump && isHittingWall() != 0 && !isGrounded())
+        {
+            rb.velocity = new Vector2(jumpingPower * isHittingWall() * speed, jumpingPower);
+            jumptimer = 10;
+            canJump = false;
+            canWallJump = false;
+        }
+
+
+        // fall handling
 
         if (Input.GetKey(KeyCode.W) && rb.velocity.y > 0f)
         {
-            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y);
+            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y + (jumpingPower * jumptimer/10f));
+            if (jumptimer > 0) jumptimer--;
+        }
+
+        if (!Input.GetKey(KeyCode.W))
+        {
+            if (rb.velocity.y > 0f) rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.9f);
+            if (isGrounded()) canWallJump = false;
+
+            jumptimer = 0;
+            canJump = true;
         }
 
         Flip();
+
     }
 
     private void FixedUpdate()
@@ -50,6 +88,45 @@ public class PlayerController : MonoBehaviour
     private bool isGrounded()
     {
         return Physics2D.OverlapCircle(groundCheck.position, .2f, groundLayer);
+    }
+
+    private int isHittingWall()
+    {
+        // 1 - hitting wall on front
+        // 0 - not hitting wall
+        //-1 - hitting wall on back
+
+        // ^ used to multiply x direction to boost of side of wall
+
+        if (Physics2D.OverlapCircle(backCheck.position, .2f, groundLayer))
+        {
+            if (isFacingRight)
+            {
+                Debug.Log("Left");
+                return 1;
+            }
+            else
+            {
+                Debug.Log("Right");
+                return -1;
+            }      
+        }
+
+        if (Physics2D.OverlapCircle(frontCheck.position, .2f, groundLayer))
+        {
+            if (!isFacingRight)
+            {
+                Debug.Log("Left");
+                return 1;
+            }
+            else
+            {
+                Debug.Log("Right");
+                return -1;
+            }
+        }
+
+        return 0;
     }
 
     private void Flip()
