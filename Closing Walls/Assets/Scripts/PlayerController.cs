@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     private int jumptimer = 0;
     private bool canJump = true;
     private bool canWallJump = false;
+    Animator animator;// animation stuff disregard
 
     [SerializeField] 
     private Rigidbody2D rb;
@@ -30,7 +31,7 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -75,6 +76,21 @@ public class PlayerController : MonoBehaviour
             jumptimer = 0;
             canJump = true;
         }
+
+        // Animation 'Logic'
+        if (canJump && rb.velocity.Equals(Vector2.zero))
+        {
+            Idle();
+        }
+        else if (canJump) 
+        {
+            Run();
+        }
+        else
+        {
+            Jump();
+        }
+
 
         Flip();
 
@@ -138,5 +154,18 @@ public class PlayerController : MonoBehaviour
             localScale.x *= -1f;
             transform.localScale = localScale;
         }
+    }
+
+    public void Run()
+    {
+        animator.SetInteger("AnimState", 1);
+    }
+    public void Idle()
+    {
+        animator.SetInteger("AnimState", 0);
+    }
+    public void Jump()
+    {
+        animator.SetInteger("AnimState", 2);
     }
 }

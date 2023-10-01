@@ -7,17 +7,17 @@ using UnityEngine;
 public class WorldFunctions : MonoBehaviour
 {
     // Start is called before the first frame update
-    public float width;
+    public GameObject mainCamera;
+    private Camera cameraObject;
+    public GameObject playerObject;
     void Start()
     {
-        width = Screen.width + 0f;
+        cameraObject = mainCamera.GetComponent<Camera>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        width -= 0.01f;
-        PlayerSettings.defaultScreenWidth = (int)width;
-        EditorPrefs.SetInt("ScreenWidth", (int)width);
+       mainCamera.transform.position = new Vector3(playerObject.transform.position.x, playerObject.transform.position.y, -10f);
     }
 }
