@@ -25,5 +25,6 @@ public class WallController : MonoBehaviour
         secondsLeft = (int)(endTime - Time.timeAsDouble);
         Wall1.transform.position = new Vector3(0 - (speedToClose * secondsLeft), 0, 0);
         Wall2.transform.position = new Vector3(0 + (speedToClose * secondsLeft), 0, 0);
+        Debug.Log("LeftWall = "+ (0 - (speedToClose * secondsLeft))+". Right Wall = "+ (0 + (speedToClose * secondsLeft)));
     }
 }
