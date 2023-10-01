@@ -26,7 +26,7 @@ public class BorderScript : MonoBehaviour
     {
         growthy = new Vector3(0f, 0.01f, 0f);
         moveleft = new Vector3(-0.01f, 0f, 0f);
-        moveright = new Vector3(0.01f, 0f, 0f);=
+        moveright = new Vector3(0.01f, 0f, 0f);
     }
 
     // Update is called once per frame
