@@ -20,4 +20,8 @@ public class LevelController : MonoBehaviour
     {
         LoadLevel("Menu");
     }
+    public static void Reset()
+    {
+        LoadLevel(SceneManager.GetActiveScene().name);
+    }
 }

@@ -9,6 +9,8 @@ public class BorderScript : MonoBehaviour
     private Vector3 moveleft;
     private Vector3 moveright;
     private bool hasEnded = false;
+    private float multiplier;
+    public GameObject worldObject;
 
     [SerializeField]
     private Transform left;
@@ -26,9 +28,12 @@ public class BorderScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        growthy = new Vector3(0f, 0.01f, 0f);
-        moveleft = new Vector3(-0.01f, 0f, 0f);
-        moveright = new Vector3(0.01f, 0f, 0f);
+        multiplier = 0.38f/((float)(worldObject.GetComponent<TimeController>().getTimeLeft()));
+
+        growthy = new Vector3(0f, 1f, 0f) * multiplier;
+        moveleft = new Vector3(-1f, 0f, 0f) * multiplier;
+        moveright = new Vector3(1f, 0f, 0f) * multiplier;
+
     }
 
     // Update is called once per frame
