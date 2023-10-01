@@ -71,7 +71,7 @@ public class PlayerController : MonoBehaviour
         if (!Input.GetKey(KeyCode.W))
         {
             if (rb.velocity.y > 0f) rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.9f);
-            canWallJump = !isGrounded();
+            canWallJump = !isGrounded(); // trust me it just works dont even ask the reasoning behind this
 
             jumptimer = 0;
             canJump = true;
