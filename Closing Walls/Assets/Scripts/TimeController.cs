@@ -30,7 +30,10 @@ public class TimeController : MonoBehaviour
     }
     private string ConvertToTime(double val)
     {
-        return ""+ (int)(val / 60) + ":" + (int)(val % 60);
+        string minutes = ""+(int)(val / 60);
+        string seconds = ""+(int)(val % 60);
+        if (seconds.Length < 2) seconds = "0" + seconds;
+        return minutes + ":" + seconds;
     }
     public double getTimeLeft()
     {

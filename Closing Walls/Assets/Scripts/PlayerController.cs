@@ -28,6 +28,9 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] 
     private LayerMask groundLayer;
+
+    [SerializeField]
+    private Transform chestCheck;
     
     // Start is called before the first frame update
     void Start()
@@ -38,8 +41,8 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
 
+        checkForCrush();
         if (!disableInput)
         {
             horizontal = Input.GetAxisRaw("Horizontal");
@@ -149,6 +152,13 @@ public class PlayerController : MonoBehaviour
         return 0;
     }
 
+    private void checkForCrush()
+    {
+        if(Physics2D.OverlapCircle(chestCheck.position, 0.1f, groundLayer))
+        {
+            LevelController.Reset();
+        }
+    }
     private void Flip()
     {
         if (isFacingRight && horizontal < 0f || !isFacingRight && horizontal > 0f)
@@ -167,6 +177,15 @@ public class PlayerController : MonoBehaviour
     public void Boost(float power)
     {
         rb.velocity = new Vector2(rb.velocity.x, power+rb.velocity.y);
+    }
+    public void BoostSide(float power,bool goingLeft)
+    {
+        float boost = power;
+        if (goingLeft)
+        {
+            power *= -1;
+        }
+        rb.velocity = new Vector2(rb.velocity.x + power, rb.velocity.y);
     }
     public void Run()
     {
