@@ -112,7 +112,7 @@ public class PlayerController : MonoBehaviour
         // 0 - not hitting wall
         //-1 - hitting wall on back
 
-        // ^ used to multiply x direction to boost of side of wall
+        // ^ used to multiply x direction to boost off side of wall
 
         if (Physics2D.OverlapCircle(backCheck.position, .2f, groundLayer))
         {
