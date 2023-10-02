@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.XR;
 using UnityEngine;
 
 public class BorderScript : MonoBehaviour
@@ -11,6 +10,11 @@ public class BorderScript : MonoBehaviour
     private bool hasEnded = false;
     private float multiplier;
     public GameObject worldObject;
+    public bool movesInFromLeft = true;
+    public bool movesInFromRight = true;
+    public bool movesInFromTop = true;
+    public bool movesInFromBottom = true;
+
 
     [SerializeField]
     private Transform left;
@@ -46,10 +50,10 @@ public class BorderScript : MonoBehaviour
     {
         if (!hasEnded)
         {
-            bottom.localScale += growthy;
-            top.localScale += growthy;
-            left.localPosition += moveright;
-            right.localPosition += moveleft;
+            if(movesInFromBottom) bottom.localScale += growthy;
+            if(movesInFromTop) top.localScale += growthy;
+            if(movesInFromLeft) left.localPosition += moveright;
+            if(movesInFromRight) right.localPosition += moveleft;
         }
     }
     public void End()

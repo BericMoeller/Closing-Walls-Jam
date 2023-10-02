@@ -7,9 +7,11 @@ public class DoorController : MonoBehaviour
     private IEnumerator coroutine;
     public GameObject BlackBorders;
     public GameObject borders;
+    private AudioSource winSound;
     // Start is called before the first frame update
     void Start()
     {
+        winSound = GetComponent<AudioSource>();
         BlackBorders.transform.position = new Vector3(transform.position.x, transform.position.y, -5f);
     }
 
@@ -21,6 +23,7 @@ public class DoorController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        winSound.Play();
         Destroy(collision.gameObject);
         borders.GetComponent<BorderScript>().End();
         coroutine = WaitForWalls();

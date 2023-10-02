@@ -18,6 +18,6 @@ public class EnemyController : MonoBehaviour
     }
     private void OnCollisionEnter2D()
     {
-        LevelController.Reset();
+        GameObject.Find("Player").GetComponent<PlayerController>().Death();
     }
 }
