@@ -19,7 +19,7 @@ public class BoostController : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         Debug.Log("Boost");
-        other.GetComponent<PlayerController>().Boost(25f);
+        other.GetComponent<PlayerController>().Boost(500f);
         Destroy(gameObject);
     }
 }

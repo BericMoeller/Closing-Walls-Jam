@@ -5,10 +5,9 @@ using UnityEngine;
 public class BoostSideController : MonoBehaviour
 {
     // Start is called before the first frame update
-    public bool FacingLeft = false;
     void Start()
     {
-        this.GetComponent<SpriteRenderer>().flipX = FacingLeft;
+
     }
 
     // Update is called once per frame
@@ -16,10 +15,11 @@ public class BoostSideController : MonoBehaviour
     {
         
     }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
-        //Debug.Log("Boost");
-        other.GetComponent<PlayerController>().BoostSide(25f,FacingLeft);
+        Debug.Log("BoostSide");
+        other.GetComponent<PlayerController>().BoostSide();
         Destroy(gameObject);
     }
 

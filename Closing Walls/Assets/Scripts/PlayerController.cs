@@ -12,6 +12,13 @@ public class PlayerController : MonoBehaviour
     private bool canJump = true;
     private bool canWallJump = false;
     private bool disableInput = false;
+    private bool boosting = false;
+    private bool upboost = false;
+    private int boostTimer = 0;
+    private int upboostTimer = 0;
+    private int boostDuration = 10;
+    private int upboostDuration = 5;
+
     Animator animator;// animation stuff disregard
 
     [SerializeField] 
@@ -69,10 +76,10 @@ public class PlayerController : MonoBehaviour
 
             // fall handling
 
-            if (Input.GetKey(KeyCode.W) && rb.velocity.y > 0f)
+            if ((Input.GetKey(KeyCode.W) && rb.velocity.y > 0f) && jumptimer > 0)
             {
                 rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y + (jumpingPower * jumptimer / 10f));
-                if (jumptimer > 0) jumptimer--;
+                jumptimer--;
             }
 
             if (!Input.GetKey(KeyCode.W))
@@ -82,7 +89,8 @@ public class PlayerController : MonoBehaviour
 
                 jumptimer = 0;
                 canJump = true;
-        }
+            }
+
         }
         // Animation 'Logic'
         if (canJump && rb.velocity.Equals(Vector2.zero))
@@ -105,7 +113,21 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        rb.velocity = new Vector2(horizontal * speed, rb.velocity.y);
+        rb.velocity = new Vector2(horizontal * speed * (boosting ? 3f : 1f),  (upboost ? 50f : rb.velocity.y)); // this is so fucked
+        
+        if (boosting)
+        {
+            boostTimer--;
+            Debug.Log("sideboost: " + boostTimer);
+            if (boostTimer == 0) boosting = false;
+        }
+
+        if (upboost)
+        {
+            upboostTimer--;
+            Debug.Log("upboost: " + upboostTimer);
+            if (upboostTimer == 0) upboost = false;
+        }
     }
 
     private bool isGrounded()
@@ -176,16 +198,22 @@ public class PlayerController : MonoBehaviour
     }
     public void Boost(float power)
     {
-        rb.velocity = new Vector2(rb.velocity.x, power+rb.velocity.y);
+        // rb.velocity = new Vector2(rb.velocity.x, power + rb.velocity.y);
+        upboost = true;
+        upboostTimer = upboostDuration;
+        jumptimer = 0;
     }
-    public void BoostSide(float power,bool goingLeft)
+    public void BoostSide()
     {
+        /*
         float boost = power;
-        if (goingLeft)
-        {
-            power *= -1;
-        }
+        power *= goingLeft ? -1f : 1f;
+
         rb.velocity = new Vector2(rb.velocity.x + power, rb.velocity.y);
+        */
+
+        boosting = true;
+        boostTimer = boostDuration;
     }
     public void Run()
     {
