@@ -60,8 +60,8 @@ public class PlayerController : MonoBehaviour
         namesOfWalls = new List<string>();
         if (DWl) namesOfWalls.Add("Left");
         if (DWr) namesOfWalls.Add("Right");
-        if (DWd) namesOfWalls.Add("Down");
-        if (DWu) namesOfWalls.Add("Up");
+        if (DWd) namesOfWalls.Add("Bottom");
+        if (DWu) namesOfWalls.Add("Top");
         audioSource = GetComponent<AudioSource>();
     }
 
