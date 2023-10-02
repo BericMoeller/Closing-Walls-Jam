@@ -69,6 +69,29 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
 
+        
+        // Animation 'Logic'
+        if (canJump && rb.velocity.Equals(Vector2.zero))
+        {
+            Idle();
+        }
+        else if (canJump) 
+        {
+            Run();
+        }
+        else
+        {
+            Jump();
+        }
+
+
+        Flip();
+
+    }
+
+    private void FixedUpdate()
+    {
+
         checkForCrush();
         if (!disableInput)
         {
@@ -85,7 +108,7 @@ public class PlayerController : MonoBehaviour
 
             // wall jump
 
-            if (Input.GetKey(KeyCode.W) && canJump && canWallJump && isHittingWall() != 0 
+            if (Input.GetKey(KeyCode.W) && canJump && canWallJump && isHittingWall() != 0
                 && !isGrounded() && (isHittingWall() != LastWalljump || sameWallJumpCooldown == 0))
             {
                 rb.velocity = new Vector2(jumpingPower * isHittingWall() * speed, jumpingPower);
@@ -115,27 +138,7 @@ public class PlayerController : MonoBehaviour
             }
 
         }
-        // Animation 'Logic'
-        if (canJump && rb.velocity.Equals(Vector2.zero))
-        {
-            Idle();
-        }
-        else if (canJump) 
-        {
-            Run();
-        }
-        else
-        {
-            Jump();
-        }
 
-
-        Flip();
-
-    }
-
-    private void FixedUpdate()
-    {
         rb.velocity = new Vector2(horizontal * speed * (boosting ? 3f : 1f),  (upboost ? 50f : rb.velocity.y)); // this is so fucked
         
         if (boosting)
