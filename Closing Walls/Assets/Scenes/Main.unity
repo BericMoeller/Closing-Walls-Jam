@@ -183,6 +183,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b51f40538f8c32d418e44871b1d6bb40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DeathWall: 0
+  DWl: 0
+  DWr: 0
+  DWu: 0
+  DWd: 0
   rb: {fileID: 38769098}
   groundCheck: {fileID: 896352080}
   backCheck: {fileID: 1670409541}
@@ -1590,7 +1595,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: -6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1734964681}
   m_Father: {fileID: 1780230981}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -4063,12 +4069,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1734964679}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 14.39, y: 9.7, z: -4}
-  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.1375122, y: -1.625, z: -0.1}
+  m_LocalScale: {x: 20.625, y: 20.625, z: 20.625}
   m_ConstrainProportionsScale: 1
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 176679328}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1739436294
 GameObject:
@@ -4277,6 +4283,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   worldObject: {fileID: 1133692942}
+  movesInFromLeft: 1
+  movesInFromRight: 1
+  movesInFromTop: 1
+  movesInFromBottom: 1
   left: {fileID: 541459910}
   right: {fileID: 948164398}
   top: {fileID: 1739436295}
@@ -5327,4 +5337,3 @@ SceneRoots:
   - {fileID: 576789898}
   - {fileID: 642241999}
   - {fileID: 1802218096}
-  - {fileID: 1734964681}

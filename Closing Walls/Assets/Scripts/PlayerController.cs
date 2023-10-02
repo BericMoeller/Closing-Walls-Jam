@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -18,6 +19,12 @@ public class PlayerController : MonoBehaviour
     private int upboostTimer = 0;
     private int boostDuration = 10;
     private int upboostDuration = 5;
+    public bool DeathWall = false;
+    private List<string> namesOfWalls;
+    public bool DWl = false;
+    public bool DWr = false;
+    public bool DWu = false;
+    public bool DWd = false; 
 
     Animator animator;// animation stuff disregard
 
@@ -43,6 +50,11 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         animator = GetComponent<Animator>();
+        namesOfWalls = new List<string>();
+        if (DWl) namesOfWalls.Add("Left");
+        if (DWr) namesOfWalls.Add("Right");
+        if (DWd) namesOfWalls.Add("Down");
+        if (DWu) namesOfWalls.Add("Up");
     }
 
     // Update is called once per frame
@@ -226,5 +238,14 @@ public class PlayerController : MonoBehaviour
     public void Jump()
     {
         animator.SetInteger("AnimState", 2);
+    }
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (DeathWall) {
+            if (namesOfWalls.Contains(collision.collider.name))
+            {
+                LevelController.Reset();
+            }
+        }
     }
 }
