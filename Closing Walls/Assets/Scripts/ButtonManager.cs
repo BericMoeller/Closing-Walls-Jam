@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,6 +11,11 @@ public class ButtonManager : MonoBehaviour
     public void LevelSelect()
     {
         LevelController.LoadLevel("LevelSelect");
+    }
+
+    public void LevelSelecter(string sceneName)
+    {
+        LevelController.LoadLevel(sceneName);
     }
     
     public void QuitButton()
