@@ -248,7 +248,10 @@ public class PlayerController : MonoBehaviour
     public void Run()
     {
         animator.SetInteger("AnimState", 1);
-        audioSource.Play();
+        if (!audioSource.isPlaying)
+        {
+            audioSource.Play();
+        }
     }
     public void Idle()
     {
