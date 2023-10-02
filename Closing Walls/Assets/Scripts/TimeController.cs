@@ -25,7 +25,7 @@ public class TimeController : MonoBehaviour
         }
         else
         {
-            LevelController.Reset();
+            GameObject.Find("Player").GetComponent<PlayerController>().Death();
         }
     }
     private string ConvertToTime(double val)

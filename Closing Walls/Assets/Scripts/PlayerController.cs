@@ -24,9 +24,13 @@ public class PlayerController : MonoBehaviour
     public bool DWl = false;
     public bool DWr = false;
     public bool DWu = false;
-    public bool DWd = false; 
+    public bool DWd = false;
+    private AudioSource audioSource;
 
     Animator animator;// animation stuff disregard
+
+    [SerializeField]
+    private AudioClip death;
 
     [SerializeField] 
     private Rigidbody2D rb;
@@ -55,6 +59,7 @@ public class PlayerController : MonoBehaviour
         if (DWr) namesOfWalls.Add("Right");
         if (DWd) namesOfWalls.Add("Down");
         if (DWu) namesOfWalls.Add("Up");
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -190,7 +195,7 @@ public class PlayerController : MonoBehaviour
     {
         if(Physics2D.OverlapCircle(chestCheck.position, 0.1f, groundLayer))
         {
-            LevelController.Reset();
+            Death();
         }
     }
     private void Flip()
@@ -202,11 +207,6 @@ public class PlayerController : MonoBehaviour
             localScale.x *= -1f;
             transform.localScale = localScale;
         }
-    }
-    public void levelEnd()
-    {
-        disableInput = true;
-        rb.velocity = Vector3.zero;
     }
     public void Boost(float power)
     {
@@ -230,21 +230,39 @@ public class PlayerController : MonoBehaviour
     public void Run()
     {
         animator.SetInteger("AnimState", 1);
+        audioSource.Play();
     }
     public void Idle()
     {
         animator.SetInteger("AnimState", 0);
+        audioSource.Stop();
     }
     public void Jump()
     {
         animator.SetInteger("AnimState", 2);
+        audioSource.Stop();
+    }
+    public void Death()
+    {
+        audioSource.PlayOneShot(death, 0.5f);
+        IEnumerator coroutine = waitForAudio();
+        StartCoroutine(coroutine);
+        LevelController.Reset();
+    }
+    private IEnumerator waitForAudio()
+    {
+        while(audioSource.isPlaying)
+        {
+            yield return new WaitForSeconds(0.1f);
+        }
+        LevelController.Reset();
     }
     private void OnCollisionStay2D(Collision2D collision)
     {
         if (DeathWall) {
             if (namesOfWalls.Contains(collision.collider.name))
             {
-                LevelController.Reset();
+                Death();
             }
         }
     }
