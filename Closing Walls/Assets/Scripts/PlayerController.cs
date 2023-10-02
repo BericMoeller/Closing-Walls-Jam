@@ -26,6 +26,9 @@ public class PlayerController : MonoBehaviour
     public bool DWu = false;
     public bool DWd = false;
     private AudioSource audioSource;
+    private int LastWalljump = 0;
+    private int sameWallJumpCooldown = 0;
+    private int maxSameWallJumpCooldown = 35; // amount of frames between walljumps on the same wall
 
     Animator animator;// animation stuff disregard
 
@@ -82,12 +85,15 @@ public class PlayerController : MonoBehaviour
 
             // wall jump
 
-            if (Input.GetKey(KeyCode.W) && canJump && canWallJump && isHittingWall() != 0 && !isGrounded())
+            if (Input.GetKey(KeyCode.W) && canJump && canWallJump && isHittingWall() != 0 
+                && !isGrounded() && (isHittingWall() != LastWalljump || sameWallJumpCooldown == 0))
             {
                 rb.velocity = new Vector2(jumpingPower * isHittingWall() * speed, jumpingPower);
                 jumptimer = 10;
                 canJump = false;
                 canWallJump = false;
+                LastWalljump = isHittingWall();
+                sameWallJumpCooldown = maxSameWallJumpCooldown;
             }
 
 
@@ -145,6 +151,18 @@ public class PlayerController : MonoBehaviour
             Debug.Log("upboost: " + upboostTimer);
             if (upboostTimer == 0) upboost = false;
         }
+
+        if (isGrounded())
+        {
+            sameWallJumpCooldown = 0;
+            LastWalljump = 0;
+        }
+        else
+        {
+            if (sameWallJumpCooldown > 0) sameWallJumpCooldown--;
+            Debug.Log("samewjcd: " + sameWallJumpCooldown);
+        }
+
     }
 
     private bool isGrounded()
@@ -171,7 +189,7 @@ public class PlayerController : MonoBehaviour
             {
                 Debug.Log("Right");
                 return -1;
-            }      
+            }
         }
 
         if (Physics2D.OverlapCircle(frontCheck.position, .2f, groundLayer))
